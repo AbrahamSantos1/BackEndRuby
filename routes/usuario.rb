@@ -120,22 +120,20 @@ post '/usuario/modificar-perfil' do
   # params
   status = 500
   resp = ''
+  usuario_id = params[: id].strip
   correo = params[:email].strip
   new_name = params[:nombre].strip
   new_password = params[:contrasena].strip
   # db access
   begin
-    usuario = DB[:usuarios].where(email: correo).first
-    puts "Correo recibido: #{correo}"
-
+    usuario = DB[:usuarios].where(id: usuario_id).first
     if usuario
-      puts "Nueva contraseña generada: #{new_password}"
       usuario.update(email: correo, nombre: new_name, contrasena: new_password)
       status = 200
-      resp = 'Contraseña actualizada'
+      resp = 'Datos actualizados'
     else
       status = 404
-      resp = 'Correo no registrado'
+      resp = 'Error al actualizar los datos'
     end
   rescue Sequel::DatabaseError => e
       resp = e.message
