@@ -1,6 +1,6 @@
 
 # Endpoint de login (usuario)
-post '/login' do
+post '/usuario/login' do
   request_payload = JSON.parse(request.body.read)
   email = request_payload['email']
   password = request_payload['password']
@@ -22,7 +22,7 @@ post '/login' do
 end
 
 # Endpoint de Perfil (usuario)
-get '/perfil/:id' do
+get '/usuario/perfil/:id' do
   usuario = Usuario[params[:id]]
   
   if usuario
@@ -54,7 +54,7 @@ get '/perfil/:id' do
 end
 
 
-post '/crear_cuenta' do
+post '/usuario/crear_cuenta' do
   request_payload = JSON.parse(request.body.read)
   
   nombre = request_payload['nombre']
@@ -83,5 +83,67 @@ post '/crear_cuenta' do
       { message: 'Error al crear la cuenta. Intente nuevamente más tarde.' }.to_json
     end
   end
+end
+
+post '/usuario/cambiar-contrasena' do
+  # params
+  status = 500
+  resp = ''
+  correo = params[:email].strip
+  new_password = params[:contrasena].strip
+  # db access
+  begin
+    usuario = DB[:usuarios].where(email: correo).first
+    puts "Correo recibido: #{correo}"
+
+    if usuario
+      puts "Nueva contraseña generada: #{new_password}"
+      updated_rows = DB[:usuarios].where(id: usuario[:id]).update(contrasena: new_password)
+      status = 200
+      resp = 'Contraseña actualizada'
+    else
+      status = 404
+      resp = 'Correo no registrado'
+    end
+  rescue Sequel::DatabaseError => e
+      resp = e.message
+  rescue StandardError => e
+      resp = e.message
+  end
+    # response
+  status status
+  resp
+end
+
+
+post '/usuario/modificar-perfil' do
+  # params
+  status = 500
+  resp = ''
+  correo = params[:email].strip
+  nombre = params[:nombre].strip
+  new_password = params[:contrasena].strip
+  # db access
+  begin
+    usuario = DB[:usuarios].where(email: correo).first
+    puts "Correo recibido: #{correo}"
+
+    if usuario
+      puts "Nueva contraseña generada: #{new_password}"
+      updated_rows = DB[:usuarios].where(id: usuario[:id]).update(contrasena: new_password)
+      status = 200
+      resp = 'Contraseña actualizada'
+    else
+      status = 404
+      resp = 'Correo no registrado'
+    end
+  rescue Sequel::DatabaseError => e
+      resp = e.message
+  rescue StandardError => e
+      resp = e.message
+  end
+    # response
+  status status
+  resp
 end
 
