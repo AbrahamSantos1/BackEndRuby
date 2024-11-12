@@ -4,7 +4,7 @@ require 'sinatra/json'
 require 'sequel'
 require 'sqlite3'
 
-DB = Sequel.sqlite('db\basededatos.db')
+DB = Sequel.sqlite('db/basededatos.db')
 DB.run "PRAGMA foreign_keys = ON"  # Habilitar las claves foráneas
 Sequel::Model.plugin :json_serializer
 

@@ -93,12 +93,12 @@ post '/usuario/cambiar-contrasena' do
   new_password = params[:contrasena].strip
   # db access
   begin
-    usuario = DB[:usuarios].where(email: correo).first
+    usuario = Usuario.first(email: correo)
     puts "Correo recibido: #{correo}"
 
     if usuario
-      puts "Nueva contraseña generada: #{new_password}"
-      updated_rows = DB[:usuarios].where(id: usuario[:id]).update(contrasena: new_password)
+      puts "Nueva Contraseña: #{new_password}"
+      usuario.update(contrasena: new_password)
       status = 200
       resp = 'Contraseña actualizada'
     else
@@ -121,7 +121,7 @@ post '/usuario/modificar-perfil' do
   status = 500
   resp = ''
   correo = params[:email].strip
-  nombre = params[:nombre].strip
+  new_name = params[:nombre].strip
   new_password = params[:contrasena].strip
   # db access
   begin
@@ -130,7 +130,7 @@ post '/usuario/modificar-perfil' do
 
     if usuario
       puts "Nueva contraseña generada: #{new_password}"
-      updated_rows = DB[:usuarios].where(id: usuario[:id]).update(contrasena: new_password)
+      usuario.update(email: correo, nombre: new_name, contrasena: new_password)
       status = 200
       resp = 'Contraseña actualizada'
     else
