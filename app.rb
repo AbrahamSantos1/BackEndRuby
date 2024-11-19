@@ -8,6 +8,7 @@ require './configs/database'
 # Cargar modelos y rutas
 require './configs/models'
 require './routes/usuario'
+require './routes/datosmedicos'
 
 # Rutas principales
 get '/' do
