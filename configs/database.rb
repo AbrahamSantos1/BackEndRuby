@@ -10,6 +10,6 @@ Sequel::Model.plugin :json_serializer
 
 
 # Configuración del servidor
- # Esto permite acceder desde cualquier IP de la red local
+set :bind, '0.0.0.0'  # Esto permite acceder desde cualquier IP de la red local
 set :logging, true      # Para habilitar el registro de logs
 set :environment, :development  # O :production dependiendo de tu entorno

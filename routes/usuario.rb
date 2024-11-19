@@ -1,6 +1,6 @@
 
 # Endpoint de login (usuario)
-post '/usuario/login' do
+post '/login' do
   request_payload = JSON.parse(request.body.read)
   email = request_payload['email']
   password = request_payload['password']
@@ -22,9 +22,9 @@ post '/usuario/login' do
 end
 
 # Endpoint de Perfil (usuario)
-get '/usuario/perfil/:id' do
+get '/perfil/:id' do
   usuario = Usuario[params[:id]]
-  
+
   if usuario
     perfil = usuario.perfil_pacientes.first
     if perfil
@@ -54,7 +54,7 @@ get '/usuario/perfil/:id' do
 end
 
 
-post '/usuario/crear_cuenta' do
+post '/crear_cuenta' do
   request_payload = JSON.parse(request.body.read)
   
   nombre = request_payload['nombre']
@@ -115,18 +115,17 @@ post '/usuario/cambiar-contrasena' do
   resp
 end
 
-
 post '/usuario/modificar-perfil' do
   # params
   status = 500
   resp = ''
-  usuario_id = params[: id].strip
+  usuario_id = params[:id].strip
   correo = params[:email].strip
   new_name = params[:nombre].strip
   new_password = params[:contrasena].strip
   # db access
   begin
-    usuario = DB[:usuarios].where(id: usuario_id).first
+    usuario = Usuario.first(id: usuario_id)
     if usuario
       usuario.update(email: correo, nombre: new_name, contrasena: new_password)
       status = 200
