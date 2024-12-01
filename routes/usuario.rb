@@ -4,22 +4,40 @@ post '/login' do
   request_payload = JSON.parse(request.body.read)
   email = request_payload['email']
   password = request_payload['password']
-  
+
   if email.empty? || password.empty?
     status 400
     return { message: 'El correo electrónico y la contraseña son requeridos' }.to_json
   end
 
   usuario = Usuario.first(email: email)
-  
+
   if usuario && usuario.contrasena == password
+    perfil = usuario.perfil_pacientes.first
+    proxima_cita = perfil&.citas_vacunacion&.first
+
     status 200
-    { message: 'Login exitoso' }.to_json
+    {
+      message: 'Login exitoso',
+      usuario: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        email: usuario.email,
+        cita_medica: proxima_cita ? {
+          especialidad_doctor: proxima_cita.profesional_salud&.especialidad,
+          dia: proxima_cita.fecha_cita,
+          hora: proxima_cita.hora
+        } : nil
+      }
+    }.to_json
   else
     status 401
     { message: 'Correo electrónico o contraseña incorrectos' }.to_json
   end
 end
+
+
 
 # Endpoint de Perfil (usuario)
 get '/perfil/:id' do
@@ -27,31 +45,30 @@ get '/perfil/:id' do
 
   if usuario
     perfil = usuario.perfil_pacientes.first
-    if perfil
-      citas = perfil.citas_vacunacion.map do |cita|
-        {
-          fecha_cita: cita.fecha_cita,
-          nombre_clinica: cita.nombre_clinica,
-          especialidad_doctor: cita.profesional_salud.especialidad,
-          hora_cita: cita.hora
-        }
-      end
-      perfil_data = {
-        nombre: usuario.nombre,
-        apellidos: usuario.apellido,
-        citas_proximas: citas
+    perfil ||= PerfilPaciente.create(usuario_id: usuario.id, fecha_nacimiento: nil, genero: nil, activo: true)
+
+    citas = perfil.citas_vacunacion.map do |cita|
+      {
+        fecha_cita: cita.fecha_cita || nil,
+        nombre_clinica: cita.nombre_clinica || '',
+        especialidad_doctor: cita.profesional_salud&.especialidad || '',
+        hora_cita: cita.hora || nil
       }
-      status 200
-      perfil_data.to_json
-    else
-      status 404
-      { message: 'Perfil no encontrado' }.to_json
     end
+
+    perfil_data = {
+      nombre: usuario.nombre || 'Usuario',
+      apellidos: usuario.apellido || '',
+      citas_proximas: citas
+    }
+    status 200
+    perfil_data.to_json
   else
     status 404
     { message: 'Usuario no encontrado' }.to_json
   end
 end
+
 
 
 post '/crear_cuenta' do

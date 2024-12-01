@@ -43,11 +43,11 @@ VALUES
 -- Insertar esquema de vacunación
 INSERT INTO esquema_vacunacion (fecha_aplicacion, vacunas_id, perfil_pacientes_id)
 VALUES
-    ('2023-02-10', 1, 1),  -- Vacuna Hepatitis B para Esteban
-    ('2023-06-15', 2, 2);  -- Vacuna MMR para Sofía
+    ('2023-02-10', 1, 1),  
+    ('2023-06-15', 2, 2);  
 
 -- Insertar citas de vacunación
 INSERT INTO citas_vacunacion (fecha_cita, nombre_clinica, perfil_pacientes_id, profesional_salud_id)
 VALUES
-    ('2023-02-10', 'Clínica Pediátrica', 1, 1),  -- Cita de Esteban con Dr. Carlos
-    ('2023-06-15', 'Clínica Vacunológica', 2, 2);  -- Cita de Sofía con Dra. Ana
+    ('2023-02-10', 'Clínica Pediátrica', 1, 1),  
+    ('2023-06-15', 'Clínica Vacunológica', 2, 2);

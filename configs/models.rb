@@ -42,7 +42,7 @@ class RegistroMedico < Sequel::Model(:registro_medicos)
 end
 
 # Modelo de DatosMedicos
-class DatosMedicos < Sequel::Model(:datos_medicos)
+class DatosMedico < Sequel::Model(:datos_medicos)
   many_to_one :registro_medico, key: :registros_medicos_id
 end
 
